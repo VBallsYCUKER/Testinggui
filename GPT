@@ -124,7 +124,7 @@ CloseButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Make the minimized frame draggable (compatible for mobile)
+-- Make the frame draggable on both PC (Mouse) and mobile (Touch)
 local dragging = false
 local dragInput, dragStart, startPos
 
@@ -133,12 +133,12 @@ local function update(input)
     Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 end
 
-CloseButton.InputBegan:Connect(function(input)
+Frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = Frame.Position
-        
+
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -147,7 +147,7 @@ CloseButton.InputBegan:Connect(function(input)
     end
 end)
 
-CloseButton.InputChanged:Connect(function(input)
+Frame.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
         dragInput = input
     end
@@ -166,13 +166,9 @@ wait(0.1)
 local targetPosition = UDim2.new(0.5, 0, 0.5, 0)
 local targetSize = UDim2.new(0.5, 0, 0.5, 0)  -- Full size after animation
 
--- Create Tweens to animate the Frame's position and size
-local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
--- Tween for Position
+-- Tween the Frame to the target position and size
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 local positionTween = TweenService:Create(Frame, tweenInfo, {Position = targetPosition})
-
--- Tween for Size
 local sizeTween = TweenService:Create(Frame, tweenInfo, {Size = targetSize})
 
 -- Play the animation (Position and Size)
