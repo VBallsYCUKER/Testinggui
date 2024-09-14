@@ -1,3 +1,5 @@
+local TweenService = game:GetService("TweenService")
+
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local PlayerInfoFrame = Instance.new("Frame")
@@ -12,11 +14,11 @@ local player = game.Players.LocalPlayer
 
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Set the properties for the main frame (50% of the screen)
+-- Set the properties for the main frame (start off-screen, small)
 Frame.Parent = ScreenGui
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-Frame.Position = UDim2.new(0.5, 0, 0.5, 0)  -- Centered
-Frame.Size = UDim2.new(0.5, 0, 0.5, 0)      -- 50% of the screen size
+Frame.Position = UDim2.new(0, 10, 1, -10)  -- Starting at bottom-left off-screen
+Frame.Size = UDim2.new(0, 0, 0, 0)  -- Starting size (small)
 Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- White color
 Frame.BackgroundTransparency = 0.5          -- 0.5 transparency
 Frame.BorderSizePixel = 0                    -- No border
@@ -70,3 +72,23 @@ UsernameLabel.BackgroundTransparency = 0.5  -- Slight transparency
 -- Circular border for the username
 UICornerUsername.CornerRadius = UDim.new(0.4, 0)  -- Rounded border
 UICornerUsername.Parent = UsernameLabel
+
+-- Add a delay to ensure everything is initialized
+wait(0.1)
+
+-- Target position and size for the Frame (center of screen)
+local targetPosition = UDim2.new(0.5, 0, 0.5, 0)
+local targetSize = UDim2.new(0.5, 0, 0.5, 0)  -- Full size after animation
+
+-- Create Tweens to animate the Frame's position and size
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+-- Tween for Position
+local positionTween = TweenService:Create(Frame, tweenInfo, {Position = targetPosition})
+
+-- Tween for Size
+local sizeTween = TweenService:Create(Frame, tweenInfo, {Size = targetSize})
+
+-- Play the animation (Position and Size)
+positionTween:Play()
+sizeTween:Play()
