@@ -7,12 +7,10 @@ local PlayerInfoFrame = Instance.new("Frame")
 local AvatarImage = Instance.new("ImageLabel")
 local DisplayNameLabel = Instance.new("TextLabel")
 local UsernameLabel = Instance.new("TextLabel")
-local TitleLabel = Instance.new("TextLabel") -- New textbox
 local UICornerAvatar = Instance.new("UICorner")
 local UICornerDisplayName = Instance.new("UICorner")
 local UICornerUsername = Instance.new("UICorner")
 local UICornerMainFrame = Instance.new("UICorner")
-local UICornerTitle = Instance.new("UICorner") -- New UICorner for Title
 local CloseButton = Instance.new("TextButton")
 local UICornerButton = Instance.new("UICorner")
 
@@ -84,19 +82,6 @@ UsernameLabel.BackgroundTransparency = 0.5  -- Slight transparency
 -- Circular border for the username
 UICornerUsername.CornerRadius = UDim.new(0.4, 0)  -- Rounded border
 UICornerUsername.Parent = UsernameLabel
-
--- Set up the Title label (new textbox)
-TitleLabel.Parent = Frame
-TitleLabel.Size = UDim2.new(0, 200, 0, 40)  -- Adjust size for the title
-TitleLabel.Position = UDim2.new(0.5, -100, 0, 10)  -- Centered at the top
-TitleLabel.Text = "IL Hub"  -- Title text
-TitleLabel.TextColor3 = DisplayNameLabel.TextColor3  -- Same color as display name
-TitleLabel.TextScaled = true
-TitleLabel.BackgroundTransparency = 1  -- Transparent background
-
--- Circular border for the title
-UICornerTitle.CornerRadius = UDim.new(0.2, 0)  -- Rounded border for the title
-UICornerTitle.Parent = TitleLabel
 
 -- Set up the Close button properties (transparent background)
 CloseButton.Parent = Frame
@@ -181,13 +166,9 @@ wait(0.1)
 local targetPosition = UDim2.new(0.5, 0, 0.5, 0)
 local targetSize = UDim2.new(0.5, 0, 0.5, 0)  -- Full size after animation
 
--- Create Tweens to animate the Frame's position and size
-local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
--- Tween for Position
+-- Tween the Frame to the target position and size
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 local positionTween = TweenService:Create(Frame, tweenInfo, {Position = targetPosition})
-
--- Tween for Size
 local sizeTween = TweenService:Create(Frame, tweenInfo, {Size = targetSize})
 
 -- Play the animation (Position and Size)
