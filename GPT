@@ -1,5 +1,5 @@
-wait(5)
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -10,9 +10,14 @@ local UsernameLabel = Instance.new("TextLabel")
 local UICornerAvatar = Instance.new("UICorner")
 local UICornerDisplayName = Instance.new("UICorner")
 local UICornerUsername = Instance.new("UICorner")
+local UICornerMainFrame = Instance.new("UICorner")
+local CloseButton = Instance.new("TextButton")
+local UICornerButton = Instance.new("UICorner")
 
 local player = game.Players.LocalPlayer
 
+-- Prevent GUI from resetting on player death
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 -- Set the properties for the main frame (start off-screen, small)
@@ -23,6 +28,10 @@ Frame.Size = UDim2.new(0, 0, 0, 0)  -- Starting size (small)
 Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- White color
 Frame.BackgroundTransparency = 0.5          -- 0.5 transparency
 Frame.BorderSizePixel = 0                    -- No border
+
+-- Add UICorner to the main frame (slightly rounded)
+UICornerMainFrame.CornerRadius = UDim.new(0.05, 0)  -- Subtle rounding
+UICornerMainFrame.Parent = Frame  -- Apply to the main frame
 
 -- Ensure the GUI works on all device types
 ScreenGui.IgnoreGuiInset = true
@@ -73,6 +82,82 @@ UsernameLabel.BackgroundTransparency = 0.5  -- Slight transparency
 -- Circular border for the username
 UICornerUsername.CornerRadius = UDim.new(0.4, 0)  -- Rounded border
 UICornerUsername.Parent = UsernameLabel
+
+-- Set up the Close button properties (transparent background)
+CloseButton.Parent = Frame
+CloseButton.Size = UDim2.new(0, 50, 0, 50)  -- Button size
+CloseButton.Text = "+"
+CloseButton.TextScaled = true
+CloseButton.BackgroundTransparency = 1  -- Transparent background
+CloseButton.TextColor3 = Color3.new(0, 0, 0)  -- Black text
+
+-- Circular border for the button
+UICornerButton.CornerRadius = UDim.new(1, 0)  -- Fully rounded button
+UICornerButton.Parent = CloseButton
+
+-- Function to toggle visibility and minimize/maximize the GUI when button is clicked
+local minimized = false
+CloseButton.MouseButton1Click:Connect(function()
+    if not minimized then
+        -- Hide the player info components
+        AvatarImage.Visible = false
+        DisplayNameLabel.Visible = false
+        UsernameLabel.Visible = false
+        
+        -- Minimize the frame to a bar while keeping position
+        local currentPos = Frame.Position
+        Frame:TweenSize(UDim2.new(0.25, 0, 0.05, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        Frame:TweenPosition(currentPos, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        CloseButton.Text = "+"
+        minimized = true
+    else
+        -- Show the player info components
+        AvatarImage.Visible = true
+        DisplayNameLabel.Visible = true
+        UsernameLabel.Visible = true
+        
+        -- Restore the frame to full size while keeping the original position
+        Frame:TweenSize(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        Frame:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        CloseButton.Text = "-"
+        minimized = false
+    end
+end)
+
+-- Make the minimized frame draggable (compatible for mobile)
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+CloseButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+CloseButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
 
 -- Add a delay to ensure everything is initialized
 wait(0.1)
