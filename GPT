@@ -1,3 +1,4 @@
+wait(5)
 local TweenService = game:GetService("TweenService")
 
 local ScreenGui = Instance.new("ScreenGui")
