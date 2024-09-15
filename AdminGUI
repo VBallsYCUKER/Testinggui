@@ -1,0 +1,486 @@
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local PlayerInfoFrame = Instance.new("Frame")
+local AvatarImage = Instance.new("ImageLabel")
+local DisplayNameLabel = Instance.new("TextLabel")
+local UsernameLabel = Instance.new("TextLabel")
+local StatsLabel = Instance.new("TextLabel")  -- TextLabel for stats
+local UICornerAvatar = Instance.new("UICorner")
+local UICornerDisplayName = Instance.new("UICorner")
+local UICornerUsername = Instance.new("UICorner")
+local UICornerStats = Instance.new("UICorner")  -- UICorner for stats label
+local UICornerMainFrame = Instance.new("UICorner")
+local CloseButton = Instance.new("TextButton")
+local UICornerButton = Instance.new("UICorner")
+local TitleLabel = Instance.new("TextLabel")  -- Title TextLabel
+local ToggleButton = Instance.new("TextButton")
+local UICornerToggle = Instance.new("UICorner")
+
+local player = game.Players.LocalPlayer
+
+-- Function to format numbers with suffixes
+function format_number(number)
+    local suffixes = {"", "K", "M", "B", "T", "QD"}
+    local suffix_index = 1
+
+    while math.abs(number) >= 1000 and suffix_index < #suffixes do
+        number = number / 1000.0
+        suffix_index = suffix_index + 1
+    end
+
+    return string.format("%.2f%s", number, suffixes[suffix_index])
+end
+
+-- Function to get and format player stats, including average
+function getCheckValue()
+    local data = game.ReplicatedStorage.Datas[player.UserId]
+    local a = data.Strength.Value
+    local b = data.Energy.Value
+    local c = data.Defense.Value
+    local d = data.Speed.Value
+
+    -- Calculate the average
+    local average = (a + b + c + d) / 4
+    local formattedAverage = format_number(average)
+
+    -- Return the average as a table
+    return {
+        Average = formattedAverage
+    }
+end
+
+-- Prevent GUI from resetting on player death
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Set the properties for the main frame
+Frame.Parent = ScreenGui
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.Position = UDim2.new(0, 10, 1, -10)  -- Starting at bottom-left off-screen
+Frame.Size = UDim2.new(0, 0, 0, 0)  -- Starting size (small)
+Frame.BackgroundColor3 = Color3.fromRGB(120, 81, 169)  -- Royal purple color
+Frame.BackgroundTransparency = 0.5
+Frame.BorderSizePixel = 1
+
+-- Add UICorner to the main frame
+UICornerMainFrame.CornerRadius = UDim.new(0.05, 0)  -- Subtle rounding
+UICornerMainFrame.Parent = Frame
+
+-- Ensure the GUI works on all device types
+ScreenGui.IgnoreGuiInset = true
+
+-- Set up the Title TextLabel
+TitleLabel.Parent = Frame
+TitleLabel.Size = UDim2.new(1, 0, 0, 50)
+TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+TitleLabel.Text = "Admin HUB DBU"
+TitleLabel.TextScaled = true
+TitleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.TextColor3 = Color3.new(1, 1, 1)
+TitleLabel.TextStrokeTransparency = 0
+TitleLabel.BorderSizePixel = 0
+
+-- Set up the player info frame
+PlayerInfoFrame.Parent = Frame
+PlayerInfoFrame.AnchorPoint = Vector2.new(1, 0)
+PlayerInfoFrame.Position = UDim2.new(1, -10, 0, 60)
+PlayerInfoFrame.Size = UDim2.new(0, 200, 0, 200)  -- Increased height for the info box
+PlayerInfoFrame.BackgroundTransparency = 1
+
+-- Set up the player's avatar
+AvatarImage.Parent = PlayerInfoFrame
+AvatarImage.Size = UDim2.new(0, 64, 0, 64)
+AvatarImage.Position = UDim2.new(0, 0, 0, 10)
+AvatarImage.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
+AvatarImage.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+AvatarImage.BackgroundTransparency = 0.5
+
+-- Circular border around the avatar
+UICornerAvatar.CornerRadius = UDim.new(1, 0)
+UICornerAvatar.Parent = AvatarImage
+
+-- Display Name label
+DisplayNameLabel.Parent = PlayerInfoFrame
+DisplayNameLabel.Size = UDim2.new(0, 120, 0, 40)
+DisplayNameLabel.Position = UDim2.new(0, 70, 0, 10)
+DisplayNameLabel.Text = player.DisplayName
+DisplayNameLabel.TextColor3 = Color3.new(0, 0, 0)
+DisplayNameLabel.TextScaled = true
+DisplayNameLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+DisplayNameLabel.BackgroundTransparency = 0.5
+
+-- Circular border for the display name
+UICornerDisplayName.CornerRadius = UDim.new(0.4, 0)
+UICornerDisplayName.Parent = DisplayNameLabel
+
+-- Username label
+UsernameLabel.Parent = PlayerInfoFrame
+UsernameLabel.Size = UDim2.new(0, 120, 0, 30)
+UsernameLabel.Position = UDim2.new(0, 70, 0, 50)
+UsernameLabel.Text = "(@" .. player.Name .. ")"
+UsernameLabel.TextColor3 = Color3.new(0.2, 0.2, 0.2)
+UsernameLabel.TextScaled = true
+UsernameLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+UsernameLabel.BackgroundTransparency = 0.5
+
+-- Circular border for the username
+UICornerUsername.CornerRadius = UDim.new(0.4, 0)
+UICornerUsername.Parent = UsernameLabel
+
+-- Set up the Stats label
+StatsLabel.Parent = PlayerInfoFrame
+StatsLabel.Size = UDim2.new(0, 200, 0, 40)
+StatsLabel.Position = UDim2.new(0, 0, 0, 90)
+StatsLabel.Text = ""  -- Initially empty
+StatsLabel.TextColor3 = Color3.new(1, 1, 1)
+StatsLabel.TextScaled = true
+StatsLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+StatsLabel.BackgroundTransparency = 0.5
+
+-- Circular border for the stats label
+UICornerStats.CornerRadius = UDim.new(0.4, 0)
+UICornerStats.Parent = StatsLabel
+
+-- Set up the Toggle Button
+ToggleButton.Parent = PlayerInfoFrame
+ToggleButton.Size = UDim2.new(0, 100, 0, 50)
+ToggleButton.Position = UDim2.new(0, 0, 0, 140)  -- Positioned closer to the StatsLabel
+ToggleButton.Text = "Spam Off"
+ToggleButton.TextScaled = true
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red when off
+ToggleButton.BackgroundTransparency = 0.5
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+ToggleButton.BorderSizePixel = 0
+
+-- Apply UICorner to the Toggle Button
+UICornerToggle.CornerRadius = UDim.new(0.5, 0)
+UICornerToggle.Parent = ToggleButton
+
+-- Function to handle toggle state
+local toggled = false
+ToggleButton.MouseButton1Click:Connect(function()
+    toggled = not toggled
+    if toggled then
+        ToggleButton.Text = "Spam ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green when on
+        print("Toggle On")
+		print("Toggle On")
+        _G.p = true
+        _G.ev = true
+        _G.ms = true
+        _G.mk = true
+        _G.hpr = true
+        _G.mcra = true
+        _G.bc = true
+        _G.mcha = true
+        _G.hk = true
+        _G.eg = true
+        _G.eg1 = true
+        _G.gssp = true
+        _G.sbc = true
+
+        task.spawn(function ()
+            while _G.sbc == true do
+                local args = {
+                    [1] = "Spirit Breaking Cannon",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+
+
+        task.spawn(function ()
+            while _G.gssp == true do
+                local args = {
+                    [1] = "God Slicer",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                local args = {
+                    [1] = "Spirit Barrage",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function ()
+            while _G.eg1 == true do
+                local args = {
+                    [1] = 1,
+                    [2] = false,
+                    [3] = CFrame.new(1279.8564453125, 22.01598358154297, 1065.0931396484375, 0.49050575494766235, 1.5363575300852972e-08, 0.8714379668235779, -3.878772858456614e-09, 1, -1.544690064747556e-08, -0.8714379668235779, 4.196683889290398e-09, 0.49050575494766235)
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("kb"):FireServer(unpack(args))
+                wait(1)
+            end
+        end)
+        task.spawn(function()
+            while _G.p == true do
+                local args = {
+                    [1] = "Blacknwhite27",
+                    [2] = 1
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("p"):FireServer(unpack(args))
+                local args = {
+                    [1] = "Blacknwhite27",
+                    [2] = 2
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("p"):FireServer(unpack(args))
+                local args = {
+                    [1] = "Blacknwhite27",
+                    [2] = 3
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("p"):FireServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function()
+            while _G.ev == true do
+                local args = {
+                    [1] = "Energy Volley",
+                    [2] = {
+                        ["FaceMouse"] = true,
+                        ["MouseHit"] = CFrame.new(1413.6954345703125, 18.40189552307129, 1140.620361328125, -0.43670985102653503, -0.7820748686790466, 0.44457122683525085, 1.4901161193847656e-08, 0.4941863417625427, 0.8693560361862183, -0.899602472782135, 0.3796563446521759, -0.21581602096557617)
+                    },
+                    [3] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("voleys"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function ()
+            while _G.ms == true do
+                local args = {
+                    [1] = "Meteor Strike",
+                    [2] = "Blacknwhite27"
+                }
+                
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function ()
+            while _G.mk == true do
+                local args = {
+                    [1] = "Mach Kick",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function()
+            wait(0)
+            while _G.hpr == true do
+                local args = {
+                    [1] = "High Power Rush",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function()
+            while _G.mcra == true do
+                local args = {
+                    [1] = "Meteor Crash",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+        task.spawn(function()
+            while _G.bc == true do
+                local args = {
+                    [1] = "Bone Crusher",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0.1)
+            end
+        end)
+        task.spawn(function()
+            while _G.mcha == true do
+                local args = {
+                    [1] = "Meteor Charge",
+                    [2] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("mel"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+       task.spawn(function()
+            while _G.hk == true do
+                local args = {
+                    [1] = "Soul Punisher",
+                    [2] = {
+                        ["FaceMouse"] = true,
+                        ["MouseHit"] = CFrame.new(1399.7783203125, 18.40189552307129, 1144.019287109375, -0.7223548293113708, -0.5993351340293884, 0.3449651598930359, -1.4901162970204496e-08, 0.49884873628616333, 0.8666890859603882, -0.6915226578712463, 0.6260570287704468, -0.3603457510471344)
+                    },
+                    [3] = "Blacknwhite27"
+                }
+                
+                game:GetService("ReplicatedStorage"):WaitForChild("Package"):WaitForChild("Events"):WaitForChild("Hak"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end)
+
+    else
+        ToggleButton.Text = "Spam OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red when off
+        print("Toggle Off")
+		_G.p = false
+        _G.ev = false
+        _G.ms = false
+        _G.mk = false
+        _G.hpr = false
+        _G.mcra = false
+        _G.bc = false
+        _G.mcha = false
+        _G.hk = false
+        _G.eg1 = false
+        _G.gssp = false
+        _G.sbc = false
+    end
+end)
+
+-- Set up the Close button properties
+CloseButton.Parent = Frame
+CloseButton.Size = UDim2.new(0, 50, 0, 50)
+CloseButton.Text = "+"
+CloseButton.TextScaled = true
+CloseButton.BackgroundTransparency = 1
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+
+-- Apply UICorner to the close button
+UICornerButton.CornerRadius = UDim.new(0.5, 0)
+UICornerButton.Parent = CloseButton
+
+-- Function to toggle visibility and minimize/maximize the GUI when button is clicked
+local minimized = false
+CloseButton.MouseButton1Click:Connect(function()
+    if not minimized then
+        AvatarImage.Visible = false
+        DisplayNameLabel.Visible = false
+        UsernameLabel.Visible = false
+        StatsLabel.Visible = false
+		ToggleButton.Visible = false
+
+        TitleLabel.Text = "DBU"
+        print("Title changed to RM Mini")
+
+        local currentPos = Frame.Position
+        Frame:TweenSize(UDim2.new(0.25, 0, 0.05, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        Frame:TweenPosition(currentPos, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        CloseButton.Text = "+"
+        minimized = true
+    else
+        AvatarImage.Visible = true
+        DisplayNameLabel.Visible = true
+        UsernameLabel.Visible = true
+        StatsLabel.Visible = true
+		ToggleButton.Visible = true
+
+
+        TitleLabel.Text = "Admin Hub DBU"
+        print("Title changed to Rape Machine Mini")
+
+        Frame:TweenSize(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        Frame:TweenPosition(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
+        CloseButton.Text = "-"
+        minimized = false
+    end
+end)
+
+-- Make the frame draggable
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+-- Dragging for minimized bar
+CloseButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+-- Dragging for both minimized and full size
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Add a delay to ensure everything is initialized
+wait(0.1)
+
+-- Update stats on GUI initialization
+local stats = getCheckValue()
+StatsLabel.Text = string.format("AVG. Stats: %s", stats.Average)
+
+-- Target position and size for the Frame (center of screen)
+local targetPosition = UDim2.new(0.5, 0, 0.5, 0)
+local targetSize = UDim2.new(0.5, 0, 0.5, 0)  -- Full size after animation
+
+-- Tween the Frame to the target position and size
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+local positionTween = TweenService:Create(Frame, tweenInfo, {Position = targetPosition})
+local sizeTween = TweenService:Create(Frame, tweenInfo, {Size = targetSize})
+
+-- Play the animation (Position and Size)
+positionTween:Play()
+sizeTween:Play()
