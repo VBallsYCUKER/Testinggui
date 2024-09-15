@@ -1,0 +1,15 @@
+        print("Toggle Off")
+		_G.p = false
+        _G.ev = false
+        _G.ms = false
+        _G.mk = false
+        _G.hpr = false
+        _G.mcra = false
+        _G.bc = false
+        _G.mcha = false
+        _G.hk = false
+        _G.eg1 = false
+        _G.gssp = false
+        _G.sbc = false
+    end
+end)
