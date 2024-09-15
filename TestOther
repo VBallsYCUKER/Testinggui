@@ -26,7 +26,7 @@ Frame.Parent = ScreenGui
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.new(0, 10, 1, -10)  -- Starting at bottom-left off-screen
 Frame.Size = UDim2.new(0, 0, 0, 0)  -- Starting size (small)
-Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- White color
+Frame.BackgroundColor3 = Color3.fromRGB(120, 81, 169)  -- Royal purple color
 Frame.BackgroundTransparency = 0.5          -- 0.5 transparency
 Frame.BorderSizePixel = 0                    -- No border
 
@@ -119,7 +119,7 @@ CloseButton.MouseButton1Click:Connect(function()
 
 		-- Change the TitleLabel text when minimized
 		TitleLabel.Text = "RM Mini"
-		print("Title changed to RMM")  -- Debugging line
+		print("Title changed to PsH")  -- Debugging line
 
 		-- Minimize the frame to a bar while keeping position
 		local currentPos = Frame.Position
@@ -135,7 +135,7 @@ CloseButton.MouseButton1Click:Connect(function()
 
 		-- Change the TitleLabel text back when expanded
 		TitleLabel.Text = "Rape Machine Mini"
-		print("RMM")  -- Debugging line
+		print("Title changed to Rape Machine Mini")  -- Debugging line
 
 		-- Restore the frame to full size while keeping the original position
 		Frame:TweenSize(UDim2.new(0.5, 0, 0.5, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5)
