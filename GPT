@@ -1,6 +1,5 @@
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local PlayerInfoFrame = Instance.new("Frame")
@@ -25,7 +24,7 @@ Frame.Parent = ScreenGui
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.new(0, 10, 1, -10)  -- Starting at bottom-left off-screen
 Frame.Size = UDim2.new(0, 0, 0, 0)  -- Starting size (small)
-Frame.BackgroundColor3 = Color3.fromRGB(91, 220, 252)  -- White color
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- White color
 Frame.BackgroundTransparency = 0.5          -- 0.5 transparency
 Frame.BorderSizePixel = 0                    -- No border
 
@@ -60,9 +59,9 @@ DisplayNameLabel.Parent = PlayerInfoFrame
 DisplayNameLabel.Size = UDim2.new(0, 120, 0, 40)  -- Adjust size for the display name
 DisplayNameLabel.Position = UDim2.new(0, 70, 0, 10)  -- Position to the right of the avatar
 DisplayNameLabel.Text = player.DisplayName  -- Set the player's display name
-DisplayNameLabel.TextColor3 = Color3.new(252, 252, 252)  -- Black text
+DisplayNameLabel.TextColor3 = Color3.new(0, 0, 0)  -- Black text
 DisplayNameLabel.TextScaled = true
-DisplayNameLabel.BackgroundColor3 = Color3.new(4, 52, 64)  -- White background for the label
+DisplayNameLabel.BackgroundColor3 = Color3.new(1, 1, 1)  -- White background for the label
 DisplayNameLabel.BackgroundTransparency = 0.5  -- Slight transparency
 
 -- Circular border for the display name
@@ -74,9 +73,9 @@ UsernameLabel.Parent = PlayerInfoFrame
 UsernameLabel.Size = UDim2.new(0, 120, 0, 30)  -- Adjust size for the username
 UsernameLabel.Position = UDim2.new(0, 70, 0, 50)  -- Positioned below the display name
 UsernameLabel.Text = "(@" .. player.Name .. ")"  -- Set the player's username
-UsernameLabel.TextColor3 = Color3.new(227, 225, 225)  -- Darker grey text
+UsernameLabel.TextColor3 = Color3.new(0.2, 0.2, 0.2)  -- Darker grey text
 UsernameLabel.TextScaled = true
-UsernameLabel.BackgroundColor3 = Color3.new(4, 52, 64)  -- White background for the label
+UsernameLabel.BackgroundColor3 = Color3.new(1, 1, 1)  -- White background for the label
 UsernameLabel.BackgroundTransparency = 0.5  -- Slight transparency
 
 -- Circular border for the username
@@ -89,7 +88,7 @@ CloseButton.Size = UDim2.new(0, 50, 0, 50)  -- Button size
 CloseButton.Text = "+"
 CloseButton.TextScaled = true
 CloseButton.BackgroundTransparency = 1  -- Transparent background
-CloseButton.TextColor3 = Color3.new(222, 31, 31)  -- Black text
+CloseButton.TextColor3 = Color3.new(0, 0, 0)  -- Black text
 
 -- Circular border for the button
 UICornerButton.CornerRadius = UDim.new(1, 0)  -- Fully rounded button
