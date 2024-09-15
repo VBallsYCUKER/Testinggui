@@ -1,3 +1,52 @@
+local loaded = false
+ 
+   success, err = pcall(function()
+       while not loaded do
+    if game["loaded"] then
+        
+        loaded = true
+        break
+    end
+    end
+   end)
+            if success then
+
+                warn(" game loaded Function executed successfully")
+
+             
+                
+            else
+                warn("Error occurred:", err)
+            
+            end
+
+print("game loaded")
+local success, result = pcall(function()
+    repeat
+        task.wait()
+    until game.Players.LocalPlayer ~= nil and game.Players.LocalPlayer.Name ~= nil and
+        game.Players.LocalPlayer:GetMouse() ~= nil
+
+    repeat
+        task.wait()
+    until game:IsLoaded()
+    game:WaitForChild("ReplicatedStorage")
+    game.ReplicatedStorage:WaitForChild("Datas")
+    game.ReplicatedStorage.Datas:WaitForChild(game.Players.LocalPlayer.UserId)
+end)
+if success then
+
+
+
+                warn(" game loaded Function executed successfully")
+
+                
+            else
+                warn("Error occurred:", err)
+            
+            end
+
+
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
