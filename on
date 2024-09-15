@@ -1,7 +1,4 @@
-ToggleButton.Text = "Spam ON"
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green when on
-        print("Toggle On")
-		print("Toggle On")
+
         _G.p = true
         _G.ev = true
         _G.ms = true
