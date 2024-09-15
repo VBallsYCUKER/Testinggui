@@ -46,6 +46,7 @@ if success then
             
             end
 
+task.wait()
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
